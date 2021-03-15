@@ -15,4 +15,4 @@ public class HotelbookingApplication {
 		hotelUI.start();
 	}
 
-}//
+}
