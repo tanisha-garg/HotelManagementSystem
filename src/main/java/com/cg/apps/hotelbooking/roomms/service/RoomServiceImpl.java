@@ -32,11 +32,11 @@ public class RoomServiceImpl implements IRoomService{
 
 	@Transactional
 	@Override
-	public Room addroom(Long hotelId, int floorNo, int roomNo) {		
+	public Room addroom(Long hotelId, int floorNo, int roomNo, double cost) {		
 		Hotel hotel =hotelService.findById(hotelId);
 		validateFloorNo(floorNo);
 		validateRoomNo(roomNo);
-		Room room = new Room(floorNo, roomNo, false, 0.0, hotel);
+		Room room = new Room(floorNo, roomNo, false, cost, hotel);
 		room = roomRepo.save(room);
 		List<Room> roomsList = hotel.getRoomList();
 		roomsList.add(room);

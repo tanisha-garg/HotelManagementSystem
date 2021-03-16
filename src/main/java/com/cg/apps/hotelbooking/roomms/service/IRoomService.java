@@ -6,7 +6,7 @@ import com.cg.apps.hotelbooking.roomms.entities.Room;
 
 public interface IRoomService {
 	
-	Room addroom(Long hotelId, int floorNo, int roomNo);
+	Room addroom(Long hotelId, int floorNo, int roomNo, double cost);
 
 	Room findById(Long roomId);
 

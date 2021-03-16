@@ -38,10 +38,10 @@ public class HotelUI {
 		displayHotel(mariott);
 		
 		System.out.println("******************************");
-		Room mariott101 = roomService.addroom(mariott.getHotelId(), 1, 101);
-		Room radisson101 = roomService.addroom(radisson.getHotelId(), 1, 101);
-		Room mariott201 = roomService.addroom(mariott.getHotelId(), 2, 201);
-		Room radisson201 = roomService.addroom(radisson.getHotelId(), 2, 201);
+		Room mariott101 = roomService.addroom(mariott.getHotelId(), 1, 101, 4000);
+		Room radisson101 = roomService.addroom(radisson.getHotelId(), 1, 101, 4500);
+		Room mariott201 = roomService.addroom(mariott.getHotelId(), 2, 201, 5000);
+		Room radisson201 = roomService.addroom(radisson.getHotelId(), 2, 201, 5500);
 		
 		displayRoom(mariott101);
 		displayRoom(radisson101);
