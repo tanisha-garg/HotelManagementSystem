@@ -4,71 +4,85 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
+
 @Entity
 public class Room {
-
-	@Id
-	@GeneratedValue
-	private long Id;
-	private Integer floorNo,roomNo;
-	private boolean available;
-	private double cost;
-	//private Hotel hotel;
 	
-	public Room() {}
-	public Room(Integer floorNo, Integer roomNo, boolean available, double cost) {
-		this.floorNo = floorNo;
-		this.roomNo = roomNo;
-		this.available = available;
+	@GeneratedValue
+	@Id
+	private Long roomId;
+	private Integer floorNumber,roomNumber;
+	private Boolean available;
+	private double cost;
+	
+	@ManyToOne
+	private Hotel hotel;
+	
+	public Room() {
+		
+	}
+	
+	public Room(Integer floorNo, Integer roomNo, Boolean available, double cost, Hotel hotel) {
+		this.floorNumber = floorNo;
+		this.roomNumber = roomNo;
+		this.available = true;
 		this.cost = cost;
+		this.hotel = hotel;
 	}
-	public long getId() {
-		return Id;
+	
+	public Long getId() {
+		return roomId;
 	}
-	public void setId(long id) {
-		Id = id;
+	
+	public void setId(Long id) {
+		roomId = id;
 	}
+	
 	public Integer getFloorNo() {
-		return floorNo;
+		return floorNumber;
 	}
+	
 	public void setFloorNo(Integer floorNo) {
-		this.floorNo = floorNo;
+		this.floorNumber = floorNo;
 	}
+	
 	public Integer getRoomNo() {
-		return roomNo;
+		return roomNumber;
 	}
+	
 	public void setRoomNo(Integer roomNo) {
-		this.roomNo = roomNo;
+		this.roomNumber = roomNo;
 	}
-	public boolean isAvailable() {
+	
+	public Boolean isAvailable() {
 		return available;
 	}
-	public void setAvailable(boolean available) {
+	
+	public void setAvailable(Boolean available) {
 		this.available = available;
 	}
+	
 	public double getCost() {
 		return cost;
 	}
+	
 	public void setCost(double cost) {
 		this.cost = cost;
 	}
-	@Override
-	public int hashCode() {
-		return (int)Id;
+
+	public Hotel getHotel() {
+		return hotel;
 	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Room other = (Room) obj;
-		if (Id != other.Id)
-			return false;
-		return true;
+
+	public void setHotel(Hotel hotel) {
+		this.hotel = hotel;
 	}
+	
+	
 	
 	
 	

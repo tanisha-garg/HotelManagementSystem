@@ -1,45 +1,64 @@
 package com.cg.apps.hotelbooking.roomms.service;
 
+import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cg.apps.hotelbooking.roomms.entities.Room;
 import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
 import com.cg.apps.hotelbooking.hotelms.service.IHotelService;
-import com.cg.apps.hotelbooking.roomms.dao.IRoomDao;
-import com.cg.apps.hotelbooking.roomms.entities.Room;
+import com.cg.apps.hotelbooking.roomms.dao.*;
 import com.cg.apps.hotelbooking.roomms.exceptions.InvalidRoomIdException;
 import com.cg.apps.hotelbooking.roomms.exceptions.InvalidRoomNoException;
 import com.cg.apps.hotelbooking.roomms.exceptions.InvalidfloorNoException;
+import com.cg.apps.hotelbooking.roomms.exceptions.RoomNotFoundException;
 
 @Service
 public class RoomServiceImpl implements IRoomService{
 	
 	@Autowired
-	private IRoomDao roomDao;
+	private IRoomRepository roomRepo;
 	
 	@Autowired
 	private IHotelService hotelService;
+	
+	@Autowired
+	private EntityManager entityManager;
 
-	/*@Override
-	public Room addroom(Long hotelId, int floorNo, int roomNo) {
+	@Transactional
+	@Override
+	public Room addroom(Long hotelId, int floorNo, int roomNo) {		
 		Hotel hotel =hotelService.findById(hotelId);
 		validateFloorNo(floorNo);
 		validateRoomNo(roomNo);
-		Room room = new Room();
-		return null;
-	}*/
+		Room room = new Room(floorNo, roomNo, false, 0.0, hotel);
+		roomRepo.save(room);
+		return room;
+	}
 
 	@Override
 	public Room findById(Long roomId) {
 		validateId(roomId);
-		return roomDao.findById(roomId);
+		Optional<Room> optional = roomRepo.findById(roomId);
+		if(!optional.isPresent()) {
+			throw new RoomNotFoundException("Room with id "+roomId+" not found");
+		}
+		return optional.get();
 	}
 
 	@Override
 	public Room findRoom(int floorNo, int roomNo) {
 		validateFloorNo(floorNo);
 		validateRoomNo(roomNo);
-		return roomDao.findRoom(floorNo, roomNo);
+		String ql = "from Room where floorNo:=floorNo and roomNo:=roomNo";
+		TypedQuery<Room> query=entityManager.createQuery(ql,Room.class);
+		Room room = query.getSingleResult();
+		return room;
 	}
 	
 	public void validateId(Long roomId) {
