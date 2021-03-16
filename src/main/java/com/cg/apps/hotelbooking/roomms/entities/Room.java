@@ -26,9 +26,9 @@ public class Room {
 		
 	}
 	
-	public Room(Integer floorNo, Integer roomNo, Boolean available, double cost, Hotel hotel) {
-		this.floorNumber = floorNo;
-		this.roomNumber = roomNo;
+	public Room(Integer floorNumber, Integer roomNumber, Boolean available, double cost, Hotel hotel) {
+		this.floorNumber = floorNumber;
+		this.roomNumber = roomNumber;
 		this.available = true;
 		this.cost = cost;
 		this.hotel = hotel;
@@ -46,16 +46,16 @@ public class Room {
 		return floorNumber;
 	}
 	
-	public void setFloorNo(Integer floorNo) {
-		this.floorNumber = floorNo;
+	public void setFloorNo(Integer floorNumber) {
+		this.floorNumber = floorNumber;
 	}
 	
 	public Integer getRoomNo() {
 		return roomNumber;
 	}
 	
-	public void setRoomNo(Integer roomNo) {
-		this.roomNumber = roomNo;
+	public void setRoomNo(Integer roomNumber) {
+		this.roomNumber = roomNumber;
 	}
 	
 	public Boolean isAvailable() {

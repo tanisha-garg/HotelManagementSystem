@@ -55,7 +55,7 @@ public class RoomServiceImpl implements IRoomService{
 	public Room findRoom(int floorNo, int roomNo) {
 		validateFloorNo(floorNo);
 		validateRoomNo(roomNo);
-		String ql = "from Room where floorNo:=floorNo and roomNo:=roomNo";
+		String ql = "from Room where floorNumber:= floorNo AND roomNumber:=roomNo";
 		TypedQuery<Room> query=entityManager.createQuery(ql,Room.class);
 		Room room = query.getSingleResult();
 		return room;

@@ -49,6 +49,11 @@ public class HotelUI {
 		Long mariott101Id = mariott101.getId();
 		mariott101 = roomService.findById(mariott101Id);
 		displayRoom(mariott101);
+		
+		System.out.println("******************************");
+		System.out.println("Finding a Room with floor number and room number as input");
+		Room room = roomService.findRoom(mariott101.getFloorNo(), mariott101.getRoomNo());
+		displayRoom(room);
 	}
 	
 	public void displayHotel(Hotel hotel) {
