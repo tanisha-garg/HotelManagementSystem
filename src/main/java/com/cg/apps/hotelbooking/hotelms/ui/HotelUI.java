@@ -1,5 +1,5 @@
 package com.cg.apps.hotelbooking.hotelms.ui;
-
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,16 +12,20 @@ import com.cg.apps.hotelbooking.roomms.service.IRoomService;
 public class HotelUI {
 	
 	@Autowired
-	IHotelService hotelService;
+	private IHotelService hotelService;
 	
 	@Autowired
-	IRoomService roomService;
+	private IRoomService roomService;
 	
 	public void start() {
 		
-		Hotel mariott = hotelService.addHotel("JW Mariott", "Chandigarh");
-		Hotel radisson = hotelService.addHotel("Radisson Blu", "Delhi");
-		Hotel trident = hotelService.addHotel("Trident", "Mumbai");
+		List<Room> mariottRooms = new ArrayList<>();
+		List<Room> radissonRooms = new ArrayList<>();
+		List<Room> tridentRooms = new ArrayList<>();
+		
+		Hotel mariott = hotelService.addHotel("JW Mariott", "Chandigarh", mariottRooms);
+		Hotel radisson = hotelService.addHotel("Radisson Blu", "Delhi", radissonRooms);
+		Hotel trident = hotelService.addHotel("Trident", "Mumbai", tridentRooms);
 		
 		displayHotel(mariott);
 		displayHotel(radisson);
@@ -52,8 +56,27 @@ public class HotelUI {
 		
 		System.out.println("******************************");
 		System.out.println("Finding a Room with floor number and room number as input");
-		Room room = roomService.findRoom(mariott101.getFloorNo(), mariott101.getRoomNo());
-		displayRoom(room);
+		int floorNumber = mariott101.getFloorNo();
+		int roomNumber = mariott101.getRoomNo();
+		Long hotelId = mariott.getHotelId();
+		Room findroom = roomService.findRoom(hotelId,floorNumber, roomNumber);
+		displayRoom(findroom);
+		
+		System.out.println("******************************");
+		System.out.println("Displaying all the rooms present in a Hotel");
+		hotelId = radisson.getHotelId();
+		List<Room> roomsList = roomService.ListfindAllRoomsInHotel(hotelId);
+		for(Room room : roomsList) {
+			displayRoom(room);
+		}
+		
+		System.out.println("******************************");
+		System.out.println("Displaying all available rooms present in a Hotel");
+		hotelId = mariott.getHotelId();
+		List<Room> availableRooms = roomService.ListavailableRoomsInHotel(hotelId);
+		for(Room room : availableRooms) {
+			displayRoom(room);
+		}
 	}
 	
 	public void displayHotel(Hotel hotel) {

@@ -1,15 +1,15 @@
 package com.cg.apps.hotelbooking.roomms.service;
 
+import java.util.*;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cg.apps.hotelbooking.roomms.entities.Room;
+import com.cg.apps.hotelbooking.hotelms.dao.IHotelRepository;
 import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
 import com.cg.apps.hotelbooking.hotelms.service.IHotelService;
 import com.cg.apps.hotelbooking.roomms.dao.*;
@@ -25,10 +25,10 @@ public class RoomServiceImpl implements IRoomService{
 	private IRoomRepository roomRepo;
 	
 	@Autowired
-	private IHotelService hotelService;
+	private IHotelRepository hotelRepo;
 	
 	@Autowired
-	private EntityManager entityManager;
+	private IHotelService hotelService;
 
 	@Transactional
 	@Override
@@ -37,7 +37,10 @@ public class RoomServiceImpl implements IRoomService{
 		validateFloorNo(floorNo);
 		validateRoomNo(roomNo);
 		Room room = new Room(floorNo, roomNo, false, 0.0, hotel);
-		roomRepo.save(room);
+		room = roomRepo.save(room);
+		List<Room> roomsList = hotel.getRoomList();
+		roomsList.add(room);
+		hotelRepo.save(hotel);
 		return room;
 	}
 
@@ -52,13 +55,42 @@ public class RoomServiceImpl implements IRoomService{
 	}
 
 	@Override
-	public Room findRoom(int floorNo, int roomNo) {
+	public Room findRoom(Long hotelId, int floorNo, int roomNo) {
 		validateFloorNo(floorNo);
 		validateRoomNo(roomNo);
-		String ql = "from Room where floorNumber:= floorNo AND roomNumber:=roomNo";
-		TypedQuery<Room> query=entityManager.createQuery(ql,Room.class);
-		Room room = query.getSingleResult();
-		return room;
+		Hotel hotel = hotelService.findById(hotelId);
+		List<Room> roomsList = hotel.getRoomList();
+		for(Room room : roomsList) {
+			if(room.getFloorNo() == floorNo && room.getRoomNo() == roomNo) {
+				return room;
+			}
+			else {
+				throw new RoomNotFoundException("Room not found in hotel "+hotelId);
+			}
+		}
+		return null;
+		
+	}
+	
+	@Override
+	public List<Room> ListfindAllRoomsInHotel(Long hotelId) {
+		Hotel hotel = hotelService.findById(hotelId);
+		List<Room> roomsList = hotel.getRoomList();
+		return roomsList;
+	}
+	
+	@Override
+	public List<Room> ListavailableRoomsInHotel(Long hotelId) {
+		Hotel hotel = hotelService.findById(hotelId);
+		List<Room> availableRooms = new ArrayList<>();
+		List<Room> roomsList = hotel.getRoomList();
+		for(Room room : roomsList) {
+			if(room.isAvailable()) {
+				availableRooms.add(room);
+			}
+		}
+		
+		return availableRooms;
 	}
 	
 	public void validateId(Long roomId) {
@@ -76,5 +108,7 @@ public class RoomServiceImpl implements IRoomService{
 			throw new InvalidRoomNoException("Room id is not correct ! Please check");
 		}
 	}
+
+
 
 }

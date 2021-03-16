@@ -1,6 +1,6 @@
 package com.cg.apps.hotelbooking.hotelms.service;
 
-import java.util.Optional;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -9,12 +9,13 @@ import org.springframework.stereotype.Service;
 import com.cg.apps.hotelbooking.hotelms.dao.IHotelRepository;
 import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
 import com.cg.apps.hotelbooking.hotelms.exceptions.HotelNotFoundException;
+import com.cg.apps.hotelbooking.roomms.entities.Room;
 
 @Service
 public class HotelServiceImpl implements IHotelService{
 	
 	@Autowired
-	IHotelRepository hotelRepo;
+	private IHotelRepository hotelRepo;
 
 	@Override
 	public Hotel findById(Long hotelId) {
@@ -27,8 +28,8 @@ public class HotelServiceImpl implements IHotelService{
 
 	@Transactional
 	@Override
-	public Hotel addHotel(String hostelName, String address) {
-		Hotel hotel = new Hotel(hostelName, address);
+	public Hotel addHotel(String hostelName, String address, List<Room> rooms) {
+		Hotel hotel = new Hotel(hostelName, address, rooms);
 		hotelRepo.save(hotel);
 		return hotel;
 	}
