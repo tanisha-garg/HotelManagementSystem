@@ -3,6 +3,8 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cg.apps.hotelbooking.guestms.entities.Guest;
+import com.cg.apps.hotelbooking.guestms.service.IGuestService;
 import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
 import com.cg.apps.hotelbooking.hotelms.service.IHotelService;
 import com.cg.apps.hotelbooking.roomms.entities.Room;
@@ -16,6 +18,9 @@ public class HotelUI {
 	
 	@Autowired
 	private IRoomService roomService;
+	
+	@Autowired
+	private IGuestService guestService;
 	
 	public void start() {
 		
@@ -77,6 +82,16 @@ public class HotelUI {
 		for(Room room : availableRooms) {
 			displayRoom(room);
 		}
+		
+		System.out.println("******************************");
+		System.out.println("Alloting a room to a guest");
+		hotelId = radisson.getHotelId();
+		floorNumber = mariott101.getFloorNo();
+		roomNumber = mariott101.getRoomNo();
+		double rent = mariott101.getCost();
+		Guest guest = guestService.allotRoom("986357853", "Tanisha", hotelId, roomNumber, floorNumber, rent);
+		displayGuest(guest);
+		
 	}
 	
 	public void displayHotel(Hotel hotel) {
@@ -99,6 +114,16 @@ public class HotelUI {
 		System.out.println();		
 		
 
+	}
+	
+	public void displayGuest(Guest guest) {
+		
+		System.out.println("Guest "+guest.getId()+
+						   "\n Name: "+guest.getName()+
+						   "\n Aadhar Id: "+guest.getAadharId()+
+						   "\n Room Number: "+guest.getRoom().getRoomNo()+
+						   "\n Checkout: "+guest.getCheckoutDateTime());
+		
 	}
 
 }

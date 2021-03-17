@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.cg.apps.hotelbooking.hotelms.dao.IHotelRepository;
 import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
 import com.cg.apps.hotelbooking.hotelms.exceptions.HotelNotFoundException;
+import com.cg.apps.hotelbooking.hotelms.exceptions.InvalidAddressException;
 import com.cg.apps.hotelbooking.roomms.entities.Room;
 
 @Service
@@ -29,9 +30,16 @@ public class HotelServiceImpl implements IHotelService{
 	@Transactional
 	@Override
 	public Hotel addHotel(String hostelName, String address, List<Room> rooms) {
+		validateHotelAddress(address);
 		Hotel hotel = new Hotel(hostelName, address, rooms);
 		hotelRepo.save(hotel);
 		return hotel;
+	}
+	
+	public void validateHotelAddress(String address) {
+		if(address.isEmpty() || address == null) {
+			throw new InvalidAddressException("Hotel address can't be empty or null");
+		}
 	}
 	
 	

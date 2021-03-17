@@ -13,7 +13,7 @@ import com.cg.apps.hotelbooking.hotelms.dao.IHotelRepository;
 import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
 import com.cg.apps.hotelbooking.hotelms.service.IHotelService;
 import com.cg.apps.hotelbooking.roomms.dao.*;
-import com.cg.apps.hotelbooking.roomms.exceptions.InvalidRoomIdException;
+import com.cg.apps.hotelbooking.roomms.exceptions.InvalidCostException;
 import com.cg.apps.hotelbooking.roomms.exceptions.InvalidRoomNoException;
 import com.cg.apps.hotelbooking.roomms.exceptions.InvalidfloorNoException;
 import com.cg.apps.hotelbooking.roomms.exceptions.RoomNotFoundException;
@@ -32,7 +32,8 @@ public class RoomServiceImpl implements IRoomService{
 
 	@Transactional
 	@Override
-	public Room addroom(Long hotelId, int floorNo, int roomNo, double cost) {		
+	public Room addroom(Long hotelId, int floorNo, int roomNo, double cost) {
+		validateCost(cost);
 		Hotel hotel =hotelService.findById(hotelId);
 		validateFloorNo(floorNo);
 		validateRoomNo(roomNo);
@@ -46,7 +47,6 @@ public class RoomServiceImpl implements IRoomService{
 
 	@Override
 	public Room findById(Long roomId) {
-		validateId(roomId);
 		Optional<Room> optional = roomRepo.findById(roomId);
 		if(!optional.isPresent()) {
 			throw new RoomNotFoundException("Room with id "+roomId+" not found");
@@ -93,19 +93,19 @@ public class RoomServiceImpl implements IRoomService{
 		return availableRooms;
 	}
 	
-	public void validateId(Long roomId) {
-		if(roomId<0) {
-			throw new InvalidRoomIdException("Room id is not correct ! Please check");
+	public void validateCost(double cost) {
+		if(cost < 0) {
+			throw new InvalidCostException("The cost can't be less than 0");
 		}
 	}
 	public void validateFloorNo(int floorNo) {
 		if(floorNo<0) {
-			throw new InvalidfloorNoException("Room id is not correct ! Please check");
+			throw new InvalidfloorNoException("Floor number can't be less than 0");
 		}
 	}
 	public void validateRoomNo(int roomNo) {
 		if(roomNo<0) {
-			throw new InvalidRoomNoException("Room id is not correct ! Please check");
+			throw new InvalidRoomNoException("Room number can't be less than 0");
 		}
 	}
 
