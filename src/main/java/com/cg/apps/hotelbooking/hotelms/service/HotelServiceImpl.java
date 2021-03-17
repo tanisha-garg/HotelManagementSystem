@@ -29,9 +29,9 @@ public class HotelServiceImpl implements IHotelService{
 
 	@Transactional
 	@Override
-	public Hotel addHotel(String hostelName, String address, List<Room> rooms) {
+	public Hotel addHotel(String hotelName, String address, List<Room> rooms) {
 		validateHotelAddress(address);
-		Hotel hotel = new Hotel(hostelName, address, rooms);
+		Hotel hotel = new Hotel(hotelName, address, rooms);
 		hotelRepo.save(hotel);
 		return hotel;
 	}
