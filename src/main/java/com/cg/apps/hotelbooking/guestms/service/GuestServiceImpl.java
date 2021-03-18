@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cg.apps.hotelbooking.guestms.dao.IGuestRepository;
+import com.cg.apps.hotelbooking.guestms.dao.IGuestTransactionRepository;
 import com.cg.apps.hotelbooking.guestms.entities.Guest;
+import com.cg.apps.hotelbooking.guestms.entities.GuestTransaction;
 import com.cg.apps.hotelbooking.guestms.exceptions.GuestNotFoundException;
 import com.cg.apps.hotelbooking.guestms.exceptions.RoomNotAvailableException;
 import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
@@ -31,6 +33,9 @@ public class GuestServiceImpl implements IGuestService{
 	
 	@Autowired
 	private IHotelService hotelService;
+	
+	@Autowired
+	private IGuestTransactionRepository guestTransactionRepo; 
 
 	@Override
 	public Guest findById(Long guestId) {
@@ -48,13 +53,29 @@ public class GuestServiceImpl implements IGuestService{
 		guest.setAadharId(aadharId);
 		guest.setName(guestName);
 		guest.setRentedDateTime(LocalDateTime.now());
-//		Hotel hotel = hotelService.findById(hotelId);
 		Room room = roomService.findRoom(hotelId, floorNumber, roomNumber);
 		if(room.isAvailable()) {
-			guest = guestRepo.save(guest);
+			
 			room.setAvailable(false);
 			guest.setRoom(room);
+			guest = guestRepo.save(guest);
 			room = roomRepo.save(room);
+			GuestTransaction transaction = new GuestTransaction();
+			transaction.setAmount(rent);
+			transaction.setDateTime(LocalDateTime.now());
+			transaction.setGuest(guest);
+			guestTransactionRepo.save(transaction);
+			guest.setRecentTransaction(transaction);
+			guest.setRoom(room);
+			List<GuestTransaction> transactionList = guest.getTransactions();
+			if(transactionList == null) {
+				transactionList = new ArrayList<>();
+				guest.setTransactions(transactionList);
+			}
+			transactionList.add(transaction);
+			guest.setTransactions(transactionList);
+			guest = guestRepo.save(guest);
+			
 		}
 		else {
 			throw new RoomNotAvailableException("Sorry! Room is not available");
@@ -64,9 +85,11 @@ public class GuestServiceImpl implements IGuestService{
 	}
 
 	@Override
-	public List transactionsHistory(Long guestId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<GuestTransaction> transactionHistory(Long guestId) {
+		Guest guest = findById(guestId);
+		List<GuestTransaction> transactionList = guest.getTransactions();
+		
+		return transactionList;
 	}
 
 	@Override

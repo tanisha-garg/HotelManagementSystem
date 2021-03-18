@@ -22,7 +22,7 @@ public class Guest {
 	private LocalDateTime rentedDateTime;
 	private LocalDateTime checkoutDateTime;
 	
-	@OneToMany
+	@OneToMany(mappedBy="guest",fetch = FetchType.EAGER)
 	private List<GuestTransaction> transactions;
 	
 	@OneToOne

@@ -64,11 +64,8 @@ public class RoomServiceImpl implements IRoomService{
 			if(room.getFloorNo() == floorNo && room.getRoomNo() == roomNo) {
 				return room;
 			}
-			else {
-				throw new RoomNotFoundException("Room not found in hotel "+hotelId);
-			}
 		}
-		return null;
+		throw new RoomNotFoundException("Room not found in hotel "+hotelId);
 		
 	}
 	

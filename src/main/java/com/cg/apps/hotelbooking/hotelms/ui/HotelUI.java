@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cg.apps.hotelbooking.guestms.entities.Guest;
+import com.cg.apps.hotelbooking.guestms.entities.GuestTransaction;
 import com.cg.apps.hotelbooking.guestms.service.IGuestService;
 import com.cg.apps.hotelbooking.hotelms.entities.Hotel;
 import com.cg.apps.hotelbooking.hotelms.service.IHotelService;
@@ -61,8 +62,8 @@ public class HotelUI {
 		
 		System.out.println("******************************");
 		System.out.println("Finding a Room with floor number and room number as input");
-		int floorNumber = mariott101.getFloorNo();
-		int roomNumber = mariott101.getRoomNo();
+		int floorNumber = mariott201.getFloorNo();
+		int roomNumber = mariott201.getRoomNo();
 		Long hotelId = mariott.getHotelId();
 		Room findroom = roomService.findRoom(hotelId,floorNumber, roomNumber);
 		displayRoom(findroom);
@@ -85,13 +86,42 @@ public class HotelUI {
 		
 		System.out.println("******************************");
 		System.out.println("Alloting a room to a guest");
-		hotelId = radisson.getHotelId();
+		
+		hotelId = mariott.getHotelId();
 		floorNumber = mariott101.getFloorNo();
 		roomNumber = mariott101.getRoomNo();
 		double rent = mariott101.getCost();
-		Guest guest = guestService.allotRoom("986357853", "Tanisha", hotelId, roomNumber, floorNumber, rent);
-		displayGuest(guest);
+		Guest tanisha = guestService.allotRoom("986357853", "Tanisha", hotelId, roomNumber, floorNumber, rent);
+		displayGuest(tanisha);
 		
+		floorNumber = mariott201.getFloorNo();
+		roomNumber = mariott201.getRoomNo();
+		rent = mariott201.getCost();
+		hotelId = mariott.getHotelId();
+		Guest pallavi = guestService.allotRoom("765487944", "Pallavi", hotelId, roomNumber, floorNumber, rent);
+		displayGuest(pallavi);
+		
+		floorNumber = radisson101.getFloorNo();
+		roomNumber = radisson101.getRoomNo();
+		rent = radisson101.getCost();
+		hotelId = radisson.getHotelId();
+		tanisha = guestService.allotRoom("9845377634", "Tanisha", hotelId, roomNumber, floorNumber, rent);
+		displayGuest(tanisha);
+		
+
+		System.out.println("******************************");
+		System.out.println("Finding a guest by Id");
+		Long guestId = tanisha.getId();
+		Guest findTanisha = guestService.findById(guestId);
+		displayGuest(findTanisha);
+		
+		System.out.println("******************************");
+		System.out.println("List Transaction History");
+		guestId = tanisha.getId();
+		List<GuestTransaction> transactionList = guestService.transactionHistory(guestId);
+		for(GuestTransaction transaction : transactionList) {
+			displayGuestTransaction(transaction);
+		}
 	}
 	
 	public void displayHotel(Hotel hotel) {
@@ -122,8 +152,18 @@ public class HotelUI {
 						   "\n Name: "+guest.getName()+
 						   "\n Aadhar Id: "+guest.getAadharId()+
 						   "\n Room Number: "+guest.getRoom().getRoomNo()+
-						   "\n Checkout: "+guest.getCheckoutDateTime());
-		
+						   "\n Checkout: "+guest.getCheckoutDateTime()+
+						   "\n Hotel: "+guest.getRoom().getHotel().getHotelId()+
+						   "\n Hotel Name: "+guest.getRoom().getHotel().getHotelName());
+		System.out.println();
+	}
+	
+	public void displayGuestTransaction(GuestTransaction transaction) {
+		System.out.println("Guest Transaction Id: "+transaction.getId()+
+						   "\n Amount: "+transaction.getAmount()+
+						   "\n Time: "+transaction.getDateTime()+
+						   "\n Guest: "+transaction.getGuest().getName()+
+						   "\n Hotel: "+transaction.getGuest().getRoom().getHotel().getHotelName());
 	}
 
 }
